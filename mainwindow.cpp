@@ -1,7 +1,8 @@
 #include "mainwindow.h"
 
 MainWidget::MainWidget(QWidget *parent) :
-    QWidget(parent)
+    QWidget(parent),
+    _tooltip(0)
 {
     QLineEdit **lineEdit = new QLineEdit*[5];
 
