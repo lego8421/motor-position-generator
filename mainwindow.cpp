@@ -1,7 +1,8 @@
 #include "mainwindow.h"
 
 MainWidget::MainWidget(QWidget *parent) :
-    QWidget(parent)
+    QWidget(parent),
+    _tooltip(0)
 {
     QLineEdit **lineEdit = new QLineEdit*[5];
 
@@ -202,6 +203,8 @@ void MainWidget::buttonClicked()
 
     positionSeries->append(positionData);
     _chart->addSeries(positionSeries);
+    connect(positionSeries, SIGNAL(hovered(QPointF,bool)), this, SLOT(tooltip(QPointF,bool)));
+
 
     QString positionFormular = "position(t) = ";
     if(ap[3] != 0.0)
@@ -237,6 +240,8 @@ void MainWidget::buttonClicked()
 
     velocitySeries->append(velocityData);
     _chart->addSeries(velocitySeries);
+    connect(velocitySeries, SIGNAL(hovered(QPointF,bool)), this, SLOT(tooltip(QPointF,bool)));
+
 
     QString velocityFormular = "velocity(t) = ";
     if(3*ap[3] != 0.0)
@@ -255,6 +260,23 @@ void MainWidget::buttonClicked()
     _velocityFormularLabel->setText(velocityFormular);
 
     _chart->createDefaultAxes();
+    _chart->setAcceptHoverEvents(true);
 
     connectMarkers();
+}
+
+void MainWidget::tooltip(QPointF point, bool state)
+{
+    if (_tooltip == 0)
+        _tooltip = new Callout(_chart);
+
+    if (state) {
+        _tooltip->setText(QString("X: %1 \nY: %2 ").arg(point.x()).arg(point.y()));
+        _tooltip->setAnchor(point);
+        _tooltip->setZValue(11);
+        _tooltip->updateGeometry();
+        _tooltip->show();
+    } else {
+        _tooltip->hide();
+    }
 }

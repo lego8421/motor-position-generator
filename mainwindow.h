@@ -5,6 +5,8 @@
 #include <QtWidgets>
 #include <QtCharts>
 
+#include "callout.h"
+
 class MainWidget : public QWidget
 {
     Q_OBJECT
@@ -16,6 +18,7 @@ public slots:
     void disconnectMarkers();
     void handleMarkerClicked();
     void buttonClicked();
+    void tooltip(QPointF point, bool state);
 
 private:
     QLineEdit *_startPosition;
@@ -31,6 +34,9 @@ private:
     QChart *_chart;
     QList<QLineSeries *> _series;
     QChartView *_chartView;
+
+    Callout *_tooltip;
+    QList<Callout *> _callouts;
 };
 
 #endif // MAINWINDOW_H

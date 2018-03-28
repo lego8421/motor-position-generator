@@ -14,7 +14,9 @@ TEMPLATE = app
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+        callout.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+        callout.h
