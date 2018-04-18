@@ -162,8 +162,7 @@ void MainWidget::buttonClicked()
     double t = _time->text().toDouble(&ok);
     double dt = t / 1000.0;
 
-    double ap[4] = {0.0, };
-    double vp[4] = {0.0, };
+    double p[4] = {0.0, };
 
     if(t < 0.0) {
         QMessageBox::warning(this, qApp->applicationDisplayName(), tr("time must be positive (t >= 0.0)"));
@@ -171,16 +170,10 @@ void MainWidget::buttonClicked()
         return;
     }
 
-    ap[0] = ps;
-    ap[1] = vs;
-    ap[2] = -(3.0/qPow(t,2))*ps - (2.0/t)*vs + (3.0/qPow(t,2))*pe - (1.0/t)*ve;
-    ap[3] = (2.0/qPow(t,2))*ps + (1.0/qPow(t,2))*vs - (2.0/qPow(t,3))*pe + (1.0/qPow(t,2))*ve;
-
-    vp[0] = ps;
-    vp[1] = vs;
-    vp[2] = -(3.0/qPow(t,2))*ps - (2.0/t)*vs + (3.0/qPow(t,2))*pe - (1.0/t)*ve;
-    vp[3] = (2.0/qPow(t,2))*ps + (1.0/qPow(t,2))*vs - (2.0/qPow(t,3))*pe + (1.0/qPow(t,2))*ve;
-
+    p[0] = ps;
+    p[1] = vs;
+    p[2] = -(3.0/qPow(t,2))*ps - (2.0/t)*vs + (3.0/qPow(t,2))*pe - (1.0/t)*ve;
+    p[3] = (2.0/qPow(t,3))*ps + (1.0/qPow(t,2))*vs - (2.0/qPow(t,3))*pe + (1.0/qPow(t,2))*ve;
 
     // remove series
     disconnectMarkers();
@@ -198,7 +191,7 @@ void MainWidget::buttonClicked()
 
     QList<QPointF> positionData;
     for (double i = 0.0; i < t; i+=dt) {
-        positionData.append(QPointF(i, ap[3]*qPow(i,3) + ap[2]*qPow(i,2) + ap[1]*i + ap[0]));
+        positionData.append(QPointF(i, p[3]*qPow(i,3) + p[2]*qPow(i,2) + p[1]*i + p[0]));
     }
 
     positionSeries->append(positionData);
@@ -207,22 +200,22 @@ void MainWidget::buttonClicked()
 
 
     QString positionFormular = "position(t) = ";
-    if(ap[3] != 0.0)
-        positionFormular += QString::number(ap[3]) + "t^3 ";
-    if(ap[2] != 0.0) {
-        if(ap[2] > 0.0)
+    if(p[3] != 0.0)
+        positionFormular += QString::number(p[3]) + "t^3 ";
+    if(p[2] != 0.0) {
+        if(p[2] > 0.0)
             positionFormular += "+";
-        positionFormular += QString::number(ap[2]) + "t^2 ";
+        positionFormular += QString::number(p[2]) + "t^2 ";
     }
-    if(ap[1] != 0.0) {
-        if(ap[1] > 0.0)
+    if(p[1] != 0.0) {
+        if(p[1] > 0.0)
             positionFormular += "+";
-        positionFormular += QString::number(ap[1]) + "t ";
+        positionFormular += QString::number(p[1]) + "t ";
     }
-    if(ap[0] != 0.0) {
-        if(ap[0] > 0.0)
+    if(p[0] != 0.0) {
+        if(p[0] > 0.0)
             positionFormular += "+";
-        positionFormular += QString::number(ap[0]);
+        positionFormular += QString::number(p[0]);
     }
 
     _positionFormularLabel->setText(positionFormular);
@@ -235,7 +228,7 @@ void MainWidget::buttonClicked()
 
     QList<QPointF> velocityData;
     for (double i = 0.0; i < t; i+=dt) {
-        velocityData.append(QPointF(i, 3*ap[3]*qPow(i,2) + 2*ap[2]*i + ap[1]));
+        velocityData.append(QPointF(i, 3*p[3]*qPow(i,2) + 2*p[2]*i + p[1]));
     }
 
     velocitySeries->append(velocityData);
@@ -244,17 +237,17 @@ void MainWidget::buttonClicked()
 
 
     QString velocityFormular = "velocity(t) = ";
-    if(3*ap[3] != 0.0)
-        velocityFormular += QString::number(3*ap[3]) + "t^2 ";
-    if(2*ap[2] != 0.0) {
-        if(2*ap[2] > 0.0)
+    if(3*p[3] != 0.0)
+        velocityFormular += QString::number(3*p[3]) + "t^2 ";
+    if(2*p[2] != 0.0) {
+        if(2*p[2] > 0.0)
             velocityFormular += "+";
-        velocityFormular += QString::number(2*ap[2]) + "t ";
+        velocityFormular += QString::number(2*p[2]) + "t ";
     }
-    if(ap[1] != 0.0) {
-        if(ap[1] > 0.0)
+    if(p[1] != 0.0) {
+        if(p[1] > 0.0)
             velocityFormular += "+";
-        velocityFormular += QString::number(ap[1]);
+        velocityFormular += QString::number(p[1]);
     }
 
     _velocityFormularLabel->setText(velocityFormular);
